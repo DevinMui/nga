@@ -35,7 +35,7 @@ var userSchema = new mongoose.Schema({
 })
 
 var Data = mongoose.model('Data', dataSchema)
-var User = mongoose.model('Data', userSchema)
+var User = mongoose.model('User', userSchema)
 
 app.get('/', function(req, res){
 	// map
@@ -63,14 +63,14 @@ app.post('/update_person', function(req, res){
 						User.findOne({ "email": person.email }, function(err, doc){
 							if(err){
 								res.json({"error": "user could not be found"})
-								break
+								//break
 							} else {
 								doc.disease = req.body.disease,
 								doc.severity = 3
 								doc.save(function(err, doc){
 									if(err){
 										res.json({"error": "user could not be updated"})
-										break
+										//break
 									} else {
 										console.log(doc)
 										Data({ 
@@ -82,7 +82,7 @@ app.post('/update_person', function(req, res){
 										}).save(function(err, doc){
 											if(err){
 												res.json({"error": "data could not be created"})
-												break
+												//break
 											} else {
 												console.log(doc)
 											}
