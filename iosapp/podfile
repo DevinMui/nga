@@ -1,0 +1,7 @@
+platform :ios, '9.3'
+use_frameworks!
+
+target 'bluetooth' do 
+	pod 'Alamofire', '~> 3.1.5'
+	pod 'p2pkit'
+end
