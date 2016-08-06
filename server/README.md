@@ -4,7 +4,7 @@
 
 ### Paths
 
-`POST /update_person` - Params: array. Ex: { "email": ... , "lat": ... , "long": ... , "disease": ... , [ {"email": ... , "lat": ... , "long": ... }, {}, {} ] }
+`POST /update_person` - Params: array. Ex: { "user": { ... doctor details including password },"email": ... , "lat": ... , "long": ... , "disease": ... , [ {"email": ... , "lat": ... , "long": ... }, {}, {} ] }
 
 `GET /get_person` - Params: email
 
