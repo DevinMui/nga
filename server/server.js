@@ -47,19 +47,23 @@ app.get('/', function(req, res){
 	res.render('index')
 })
 
+app.get('/memes', function(req, res){
+	res.redirect("https://www.youtube.com/watch?v=HgQEuPw942c")
+})
+
 app.post('/update_person', function(req, res){
 	// send array with people close, including throughout sick time (typically 1 -3 days but depends on illness)
 	User.findOne({ email: req.body.user.email }, function(err, doc){
 		if(err){
-			res.json("error": "user could not be found")
+			res.json({"error": "user could not be found"})
 		} else if(doc == undefined){
-			res.json("error": "user could not be found")
+			res.json({"error": "user could not be found"})
 		} else if(!doc.doctor){
-			res.json("error": "user is not a doctor")
+			res.json({"error": "user is not a doctor"})
 		} else {
 			bcrypt.compare(req.body.user.password, doc.password, function(err, check) {
 				if(err){
-					res.json("error": "weird error in bcrypt checking lel")
+					res.json({"error": "weird error in bcrypt checking lel"})
 				} else if(check){
 					User.findOne({ email: req.body.email }, function (err, doc){
 						doc.disease = req.body.disease
@@ -152,7 +156,7 @@ app.post('/create_person', function(req, res){
 			else
 				res.json(user)
 		})
-	}
+	})
 })
 
 app.listen(3000, function(){
