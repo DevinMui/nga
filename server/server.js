@@ -27,6 +27,15 @@ var dataSchema = new mongoose.Schema({
 	timestamps: true
 })
 
+var geoDataSchema = new mongoose.Schema({
+	lat: Number,
+	long: Number,
+	email: String,
+},
+{
+	timestamps: true
+})
+
 var userSchema = new mongoose.Schema({
 	name: String, // really doesnt matter but wutever
 	email: String,
@@ -41,6 +50,7 @@ var userSchema = new mongoose.Schema({
 
 var Data = mongoose.model('Data', dataSchema)
 var User = mongoose.model('User', userSchema)
+var GeoData = mongoose.model('GeoData', geoDataSchema)
 
 app.get('/', function(req, res){
 	// map
@@ -127,8 +137,8 @@ app.post('/update_person', function(req, res){
 	})
 })
 
-app.get('/get_person', function(req, res){
-	User.findOne({email: req.body.email }, function(err, doc){
+app.get('/get_person/:email', function(req, res){
+	User.findOne({email: req.params.email }, function(err, doc){
 		if(err)
 			res.json({"error": "no user found"})
 		else {
@@ -156,6 +166,46 @@ app.post('/create_person', function(req, res){
 			else
 				res.json(user)
 		})
+	})
+})
+
+app.post('/geodata', function(req, res){
+	var lat = req.body.lat 
+	var long = req.body.long
+	var email = req.body.email
+	GeoData({
+		lat: lat,
+		long: long,
+		email: email
+	}).save(function(err, geoData){
+		if(err)
+			res.json({"error": "geodata could not be saved"})
+		else
+			res.json(geoData)
+	})
+})
+
+app.get('/geodata', function(req, res){
+	GeoData.find({}, function(err, docs){
+		if(err)
+			res.json({"error": "could not find data information"})
+		else if(docs == undefined)
+			res.json({"error": "could not find data information"})
+		else
+			res.json(docs)
+	})
+})
+
+app.get('/geodata/:email', function(req, res){
+	var email = req.params.email
+	GeoData.find({ email: email }, function(err, docs){
+		if(err)
+			res.json({"error": "could not find data information"})
+		else if(docs == undefined){
+			res.json({"error": "could not find data information"})
+		} else {
+			res.json(docs)
+		}
 	})
 })
 
