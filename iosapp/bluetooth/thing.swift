@@ -5,20 +5,21 @@
 
 import Mapbox
 import UIKit
-import Alamofire
-
-class ViewController: UIViewController, MGLMapViewDelegate {
 
 
+class thing: UIViewController, MGLMapViewDelegate {
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         let mapView = MGLMapView(frame: view.bounds)
         mapView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+        mapView.styleURL = MGLStyle.darkStyleURLWithVersion(9)
         mapView.centerCoordinate = CLLocationCoordinate2DMake(37.3798862, -122.01248270000002)
         mapView.showsUserLocation = true
         mapView.zoomLevel = 10
-        mapView.maximumZoomLevel = 15
+        mapView.maximumZoomLevel = 17
         mapView.delegate = self
         view.addSubview(mapView)
         
@@ -27,7 +28,7 @@ class ViewController: UIViewController, MGLMapViewDelegate {
             CLLocationCoordinate2DMake(45.52245, -122.67773),
             CLLocationCoordinate2DMake(37.4, -122.014),
             CLLocationCoordinate2DMake(37.36, -122.02)
-            ]
+        ]
         
         // Fill an array with point annotations and add it to the map.
         var pointAnnotations = [MGLPointAnnotation]()
@@ -38,42 +39,19 @@ class ViewController: UIViewController, MGLMapViewDelegate {
             pointAnnotations.append(point)
         }
         
-        _ = NSTimer.scheduledTimerWithTimeInterval(5, target: self, selector: Selector("update"), userInfo: nil, repeats: true)
-        
         mapView.addAnnotations(pointAnnotations)
+        
+        //_ = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: Selector("update"), userInfo: nil, repeats: true)
+        
     }
-
-    func update () {
     
+    func update () {
+        
         dispatch_async(dispatch_get_main_queue(), {
-            
-            var pointAnnotations = [MGLPointAnnotation]()
-            
-            
-            Alamofire.request(.GET, "https://dce96ee1.ngrok.io/data").responseJSON {response in
-                
-                if let JSON = response.result.value {
-                    print(JSON)
-                    
-                    for i in 0..<JSON.count {
-                        
-                    }
-                }
-            }
-            
-            
-            for coordinate in coordinates {
-                let point = MGLPointAnnotation()
-                point.coordinate = coordinate
-                point.title = "\(coordinate.latitude), \(coordinate.longitude)"
-                pointAnnotations.append(point)
-            }
 
-            
-            mapView.addAnnotations(pointAnnotations)
         })
     }
-
+    
     // MARK: - MGLMapViewDelegate methods
     
     // This delegate method is where you tell the map to load a view for a specific annotation. To load a static MGLAnnotationImage, you would use `-mapView:imageForAnnotation:`.
@@ -92,7 +70,7 @@ class ViewController: UIViewController, MGLMapViewDelegate {
         // If there’s no reusable annotation view available, initialize a new one.
         if annotationView == nil {
             annotationView = CustomAnnotationView(reuseIdentifier: reuseIdentifier)
-            annotationView!.frame = CGRectMake(0, 0, 60, 60)
+            annotationView!.frame = CGRectMake(0, 0, 40, 40)
             
             // Set the annotation view’s background color to a value determined by its longitude.
             annotationView!.backgroundColor = UIColor(hue: 0, saturation: 0.5, brightness: 1, alpha: 0.4)
@@ -106,18 +84,5 @@ class ViewController: UIViewController, MGLMapViewDelegate {
     }
 }
 
-//
-// MGLAnnotationView subclass
-class CustomAnnotationView: MGLAnnotationView {
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        // Force the annotation view to maintain a constant size when the map is tilted.
-        scalesWithViewingDistance = false
-        
-        // Use CALayer’s corner radius to turn this view into a circle.
-        layer.cornerRadius = frame.width / 2
-    }
-    
-}
+
   
