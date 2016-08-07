@@ -1,0 +1,79 @@
+[
+ {
+   "FIELD1": "code",
+   "FIELD2": "title",
+   "FIELD3": "value",
+   "FIELD4": "latest_date",
+   "FIELD5": "source",
+   "FIELD6": "source_link",
+   "FIELD7": "notes",
+   "FIELD8": "explore",
+   "FIELD9": "units"
+ },
+ {
+   "FIELD1": "tot_case_evd",
+   "FIELD2": "Cumulative Cases of Ebola",
+   "FIELD3": "28637",
+   "FIELD4": "2016-01-06",
+   "FIELD5": "WHO",
+   "FIELD6": "https://data.humdata.org/dataset/ebola-cases-2014",
+   "FIELD7": "It includes probable, confirmed and suspected cases",
+   "FIELD8": "http://docs.humdata.org/west-africa-ebola-outbreak-visualization/",
+   "FIELD9": "count"
+ },
+ {
+   "FIELD1": "tot_death_evd",
+   "FIELD2": "Cumulative Deaths from Ebola",
+   "FIELD3": "11315",
+   "FIELD4": "2016-01-06",
+   "FIELD5": "WHO",
+   "FIELD6": "https://data.humdata.org/dataset/ebola-cases-2014",
+   "FIELD7": "It includes probable, confirmed and suspected cases",
+   "FIELD8": "http://docs.humdata.org/west-africa-ebola-outbreak-visualization/",
+   "FIELD9": "count"
+ },
+ {
+   "FIELD1": "plan_coverage",
+   "FIELD2": "Response Plan Coverage",
+   "FIELD3": "0.702",
+   "FIELD4": "2015-09-11",
+   "FIELD5": "OCHA FTS",
+   "FIELD6": "https://data.humdata.org/dataset/fts-ebola-coverage",
+   "FIELD7": "",
+   "FIELD8": "http://simonbjohnson.github.io/ebola-fts-dashboard/",
+   "FIELD9": "ratio"
+ },
+ {
+   "FIELD1": "prfa",
+   "FIELD2": "People Receiving Food Assistance",
+   "FIELD3": "3700000",
+   "FIELD4": "2015-11-18",
+   "FIELD5": "WFP",
+   "FIELD6": "https://data.humdata.org/dataset/number-of-people-reached-with-food-assistance-in-emergency-settings",
+   "FIELD7": "Data refers to people receiving food in Sierra Leone, Liberia and Guinea only",
+   "FIELD8": "http://simonbjohnson.github.io/Ebola_Market_prices/",
+   "FIELD9": "million"
+ },
+ {
+   "FIELD1": "open_etc",
+   "FIELD2": "Open Ebola Treatment Centers",
+   "FIELD3": "19",
+   "FIELD4": "2015-11-25",
+   "FIELD5": "UNMEER",
+   "FIELD6": "https://data.humdata.org/dataset/ebola-treatment-centers",
+   "FIELD7": "",
+   "FIELD8": "http://www.nytimes.com/interactive/2014/07/31/world/africa/ebola-virus-outbreak-qa.html?_r=1",
+   "FIELD9": "count"
+ },
+ {
+   "FIELD1": "aff_country",
+   "FIELD2": "Currently Affected Countries",
+   "FIELD3": "1",
+   "FIELD4": "2016-01-06",
+   "FIELD5": "WHO",
+   "FIELD6": "https://data.humdata.org/dataset/ebola-cases-2014",
+   "FIELD7": "Countries with an active EVD outbreak are Guinea, Liberia, Sierra Leone, and Italy.Previously affected countries Nigeria, Senegal, Spain, United States of America, Mali, and United Kingdom are not included as they have been declared ebola free by the WHO.",
+   "FIELD8": "",
+   "FIELD9": "count"
+ }
+]
