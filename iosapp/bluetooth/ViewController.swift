@@ -12,8 +12,11 @@ class ViewController: UIViewController, MGLMapViewDelegate, CLLocationManagerDel
     let locationManager = CLLocationManager()
     let email = NSUserDefaults.standardUserDefaults().stringForKey("email")
     
-    var longitude = Double()
-    var latitude = Double()
+    var longitude = -122.0124813449774
+    var latitude = 37.38375283781195
+    
+    var latt = Double()
+    var longg = Double()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,7 +28,7 @@ class ViewController: UIViewController, MGLMapViewDelegate, CLLocationManagerDel
         
         if CLLocationManager.locationServicesEnabled() {
             locationManager.delegate = self
-            locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+            locationManager.desiredAccuracy = kCLLocationAccuracyBest
             locationManager.startUpdatingLocation()
         }
         
@@ -49,7 +52,7 @@ class ViewController: UIViewController, MGLMapViewDelegate, CLLocationManagerDel
         longs.removeAll()
         diseases.removeAll()
         
-        Alamofire.request(.GET, "https://dce96ee1.ngrok.io/data").responseJSON {response in
+        Alamofire.request(.GET, "http://dce96ee1.ngrok.io/data").responseJSON {response in
             
             if let JSON = response.result.value {
                 
@@ -78,24 +81,23 @@ class ViewController: UIViewController, MGLMapViewDelegate, CLLocationManagerDel
         }
         
     }
+    
+    let headers : [String : String] = [
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+    ]
 
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let locValue:CLLocationCoordinate2D = manager.location!.coordinate
         
         let lat = locValue.latitude as Double
-        let long = locValue.latitude as Double
-        
-        if longitude - 0.0005 < long && longitude + 0.0005 > long{
-            longitude = long
-            latitude = lat
-        } else if latitude - 0.0005 < lat && latitude + 0.0005 > lat{
-            longitude = long
-            latitude = lat
-        }
+        let long = locValue.longitude as Double
 
+        longg = long
+        latt = lat
         
-        print("locations = \(locValue.latitude) \(locValue.longitude)")
+        //print("locations = \(locValue.latitude) \(locValue.longitude)")
     }
     
         // Fill an array with point annotations and add it to the map.
@@ -112,14 +114,19 @@ class ViewController: UIViewController, MGLMapViewDelegate, CLLocationManagerDel
                 let params = [
                     "lat": self.latitude,
                     "long": self.longitude,
-                    "email": self.email!,
+                    "user_email": self.email!,
                     ]
-                
-                Alamofire.request(.POST, "http://dce96ee1.ngrok.io/geodata", parameters: params as? [String : AnyObject], headers: headers, encoding: .JSON)
-                    .responseJSON { response in
-                        if let JSON = response.result.value {
-                            print(JSON)
-                        }
+                if self.longg != self.longitude || self.latt != self.latitude {
+                    
+                    self.longitude = self.longg
+                    self.latitude = self.latt
+                    
+                    Alamofire.request(.POST, "http://dce96ee1.ngrok.io/data", parameters: params as? [String : AnyObject], headers: headers, encoding: .JSON)
+                        .responseJSON { response in
+                            if let JSON = response.result.value {
+                                print(JSON)
+                            }
+                    }
                 }
             }
         }

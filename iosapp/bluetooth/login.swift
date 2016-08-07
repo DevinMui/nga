@@ -19,7 +19,7 @@ class login: UIViewController {
         super.viewDidLoad()
         
         if loggedin == true {
-            performSegueWithIdentifier("login", sender: nil)
+            performSegueWithIdentifier("login", sender: true)
         } else {
         }
         

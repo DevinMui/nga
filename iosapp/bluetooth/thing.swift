@@ -26,7 +26,7 @@ class thing: UIViewController, MGLMapViewDelegate {
         var longs = [Double()]
         var diseases = [String()]
         
-        Alamofire.request(.GET, "https://dce96ee1.ngrok.io/data").responseJSON {response in
+        Alamofire.request(.GET, "https://dce96ee1.ngrok.io/less_severe").responseJSON {response in
             
             if let JSON = response.result.value {
                 
