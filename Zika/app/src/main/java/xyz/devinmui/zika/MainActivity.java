@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements com.mapbox.mapbox
         Intent intent = getIntent();
 
         email = intent.getStringExtra("email");
+        System.out.println(email);
 
         locationServices = LocationServices.getLocationServices(MainActivity.this);
 
@@ -143,7 +144,8 @@ public class MainActivity extends AppCompatActivity implements com.mapbox.mapbox
                     // Move the map camera to where the user location is
                     double latitude = location.getLatitude();
                     double longitude = location.getLongitude();
-                    String json = "{\"email\": \"" + email + "\", \"lat\": " + latitude + ", \"long\": " + longitude + "}";
+                    String json = "{\"user_email\": \"" + email + "\", \"lat\": " + latitude + ", \"long\": " + longitude + "}";
+                    System.out.println(json);
                     try {
                         mApi.post("/data", json, new Callback() {
                             @Override
@@ -261,10 +263,78 @@ public class MainActivity extends AppCompatActivity implements com.mapbox.mapbox
         if (data) {
             data = false;
             // wipe all annotations and stuff
+            map.removeAnnotations();
             // add normal annotations
+            mApi.get("/data", new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    String res = response.body().string();
+                    try {
+                        JSONArray jsonArr = new JSONArray(res);
+                        dataPoints = jsonArr.length();
+                        for (int i = 0; i < jsonArr.length(); i++) {
+                            JSONObject json = jsonArr.getJSONObject(i);
+                            final String disease = json.getString("disease");
+                            final double latitude = json.getDouble("lat");
+                            final double longitude = json.getDouble("long");
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    map.addMarker(new MarkerViewOptions()
+                                            .position(new LatLng(latitude, longitude))
+                                            .title(disease)
+                                            .snippet(disease + " has cases here")
+                                    );
+                                }
+                            });
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         } else {
             data = true;
             // add predictive annotations
+            map.removeAnnotations();
+            mApi.get("/less_severe", new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    String res = response.body().string();
+                    try {
+                        JSONArray jsonArr = new JSONArray(res);
+                        dataPoints = jsonArr.length();
+                        for (int i = 0; i < jsonArr.length(); i++) {
+                            JSONObject json = jsonArr.getJSONObject(i);
+                            final String disease = json.getString("disease");
+                            final double latitude = json.getDouble("lat");
+                            final double longitude = json.getDouble("long");
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    map.addMarker(new MarkerViewOptions()
+                                            .position(new LatLng(latitude, longitude))
+                                            .title(disease)
+                                            .snippet(disease + " has cases here")
+                                    );
+                                }
+                            });
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         }
 
     }
@@ -350,43 +420,83 @@ public class MainActivity extends AppCompatActivity implements com.mapbox.mapbox
             // do stuff
             while(true) {
                 System.out.println("while loop");
-                mApi.get("/data", new Callback() {
-                    @Override
-                    public void onFailure(Call call, IOException e) {
+                if(data) {
+                    mApi.get("/less_severe", new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
 
-                    }
-
-                    @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        String res = response.body().string();
-                        try {
-                            JSONArray jsonArr = new JSONArray(res);
-                            if (jsonArr.length() > dataPoints) {
-                                // reparse!
-                                dataPoints = jsonArr.length();
-                                for (int i = 0; i < jsonArr.length(); i++) {
-                                    final JSONObject json = jsonArr.getJSONObject(i);
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            try {
-                                                map.addMarker(new MarkerViewOptions()
-                                                        .position(new LatLng(json.getDouble("lat"), json.getDouble("long")))
-                                                        .title(json.getString("disease"))
-                                                        .snippet(json.getString("disease") + " has cases here")
-                                                );
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-                                    });
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
-                    }
-                });
+
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            String res = response.body().string();
+                            try {
+                                JSONArray jsonArr = new JSONArray(res);
+                                if (jsonArr.length() > dataPoints) {
+                                    // reparse!
+                                    dataPoints = jsonArr.length();
+                                    for (int i = 0; i < jsonArr.length(); i++) {
+                                        final JSONObject json = jsonArr.getJSONObject(i);
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                try {
+                                                    map.addMarker(new MarkerViewOptions()
+                                                            .position(new LatLng(json.getDouble("lat"), json.getDouble("long")))
+                                                            .title(json.getString("disease"))
+                                                            .snippet(json.getString("disease") + " has cases here")
+                                                    );
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                } else {
+                    mApi.get("/data", new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+
+                        }
+
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            String res = response.body().string();
+                            try {
+                                JSONArray jsonArr = new JSONArray(res);
+                                if (jsonArr.length() > dataPoints) {
+                                    // reparse!
+                                    dataPoints = jsonArr.length();
+                                    for (int i = 0; i < jsonArr.length(); i++) {
+                                        final JSONObject json = jsonArr.getJSONObject(i);
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                try {
+                                                    map.addMarker(new MarkerViewOptions()
+                                                            .position(new LatLng(json.getDouble("lat"), json.getDouble("long")))
+                                                            .title(json.getString("disease"))
+                                                            .snippet(json.getString("disease") + " has cases here")
+                                                    );
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
 
                 try {
                     Thread.sleep(5000);

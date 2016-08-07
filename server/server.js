@@ -65,90 +65,41 @@ app.get('/memes', function(req, res){
 	res.redirect("https://www.youtube.com/watch?v=HgQEuPw942c")
 })
 
-// app.post('/update_person', function(req, res){
-// 	// send array with people close, including throughout sick time (typically 1 -3 days but depends on illness)
-// 	User.findOne({ email: req.body.user.email }, function(err, doc){
-// 		if(err){
-// 			res.json({"error": "user could not be found"})
-// 		} else if(doc == undefined){
-// 			res.json({"error": "user could not be found"})
-// 		} else if(!doc.doctor){
-// 			res.json({"error": "user is not a doctor"})
-// 		} else {
-// 			User.findOne({ email: req.body.email }, function (err, doc){
-// 				doc.disease = req.body.disease
-// 				doc.severity = 4 // infected
-// 				doc.save(function(err, doc){
-// 					var data = Data({
-// 						lat: req.body.lat,
-// 						long: req.body.long,
-// 						user_email: req.body.email,
-// 						disease: req.body.disease,
-// 						severity: 4
-// 					}).save(function(err, doc){
-// 						if(err)
-// 							res.json({"error": "data could not be created"})
-// 						else {
-// 							for(var i=0;i<req.body.people.length;i++){
-// 								var person = req.body.people[i]
-// 								User.findOne({ "email": person.email }, function(err, doc){
-// 									if(err){
-// 										res.json({"error": "user could not be found"})
-// 										//break
-// 									} else {
-// 										doc.disease = req.body.disease,
-// 										doc.severity = 3
-// 										doc.save(function(err, doc){
-// 											if(err){
-// 												res.json({"error": "user could not be updated"})
-// 												//break
-// 											} else {
-// 												console.log(doc)
-// 												Data({ 
-// 													lat: person.lat,
-// 													long: person.long,
-// 													user_email: person.email,
-// 													disease: req.body.disease,
-// 													severity: 3
-// 												}).save(function(err, doc){
-// 													if(err){
-// 														res.json({"error": "data could not be created"})
-// 														//break
-// 													} else {
-// 														console.log(doc)
-// 													}
-// 												})
-// 											}
-
-// 										})
-// 									}
-// 								})
-// 							}
-// 							res.json({"message": "all good"})
-// 						}
-// 					})
-// 				})
-// 			})
-// 		}
-// 	})
-// })
-
 // doctor only function
 app.post('/update', function(req, res){
 	// input email
 	Data.find({ "user_email": req.body.email}, function(err, datas){
-		Data.find({}, function(err, docs){
+		//console.log(datas)
+		if(err) console.log(err)
+		for(var i=0; i<datas.length;i++){
+			var data = datas[i]
+			data.disease = req.body.disease
+			data.severity = 4
+			data.save(function(err,doc){
+				if(err) console.log(err)
+				//console.log(doc)
+			})
+		}
+
+		Data.find({ user_email: { $ne: req.body.email } }, function(err, docs){
 			var foo = []
 			for(var i=0; i < docs.length; i++){
 				var bar = docs[i]
-				for(var n=0; i < datas.length; i++){
+				//console.log(bar)
+				for(var n=0; n < datas.length; n++){
 					var doc = datas[n]
-					if((-0.0002 < doc.lat - bar.lat < 0.0002) && (-0.0002 < doc.long - bar.long < 0.0002) && (10 < Date(doc.createdAt()) - Date(bar.createdAt()) < 10)){
-						foo.push(doc)
-						doc.disease = req.body.disease // "predictive"
-						doc.severity = 3
-						doc.save()
-						Data.find({ user_email: doc.user_email}, function(err, data){
+					//console.log(doc)
+					//res.send(Date(doc.createdAt) - Date(bar.createdAt))
+					var docDate = (+new Date(doc.createdAt)) 
+					var barDate = (+new Date(bar.createdAt)) 
+					//console.log(String((docDate - barDate) / 1000))
+					//console.log(doc.createdAt)
+					if((-0.00002 < doc.lat - bar.lat < 0.00002) && (-0.00002 < doc.long - bar.long < 0.00002) && (-100 < docDate - barDate < 100)){
+						foo.push(bar)
+						bar.disease = req.body.disease // "predictive"
+						bar.severity = 3
+						bar.save()
+						Data.find({ user_email: bar.user_email}, function(err, data){
 							for(var i=0;i<data.length;i++){
 								data[i].severity = 3
 								data[i].disease = req.body.disease
@@ -208,7 +159,7 @@ app.post('/create_person', function(req, res){
 })
 
 app.get('/data', function(req, res){
-	Data.find({ disease: { $ne: null}}, function(err, doc){
+	Data.find({ severity: 4 }, function(err, doc){
 		if(err)
 			res.json({"error": "failed to get data"})
 		else if(doc == undefined)
@@ -218,6 +169,16 @@ app.get('/data', function(req, res){
 	})
 })
 
+app.get('/less_severe', function(req, res){
+	Data.find({ severity: 3}, function(err, doc){
+		if(err)
+			res.json({"error": "failed to get data"})
+		else if(doc == undefined)
+			res.json({"error": "failed to get data"})
+		else
+			res.json(doc)
+	})
+})
 
 app.get('/alldata', function(req, res){
 	Data.find({}, function(err, doc){

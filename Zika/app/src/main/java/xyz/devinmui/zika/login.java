@@ -34,8 +34,9 @@ public class login extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 Intent intent = new Intent(login.this, MainActivity.class);
-                intent.putExtra("email", loginText.getText());
-                login.this.startActivity(intent);
+                System.out.println(loginText.getText());
+                intent.putExtra("email", loginText.getText().toString());
+                startActivity(intent);
             }
         });
     }
