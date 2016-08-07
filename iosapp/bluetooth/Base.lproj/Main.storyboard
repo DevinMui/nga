@@ -40,7 +40,7 @@
                             <outlet property="delegate" destination="GZk-8t-cgN" id="zbk-v5-qWs"/>
                         </connections>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Current" image="1470557618_icon-map" selectedImage="1470557618_icon-map" id="7VS-Nt-g1m"/>
+                    <tabBarItem key="tabBarItem" title="Current" image="1470614352_icon-map" selectedImage="1470614352_icon-map" id="7VS-Nt-g1m"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bV1-Me-Kcu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -218,7 +218,7 @@
                             <constraint firstItem="KhM-fe-p8D" firstAttribute="centerY" secondItem="c6H-V6-llf" secondAttribute="centerY" id="oHc-Ml-93X"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Settings" id="wn0-jS-fed"/>
+                    <tabBarItem key="tabBarItem" systemItem="more" id="wn0-jS-fed"/>
                     <connections>
                         <outlet property="label" destination="Zgq-oX-ebt" id="eys-KD-Xiw"/>
                         <segue destination="ast-JD-o3b" kind="show" id="Okv-NZ-ZWN"/>
@@ -232,7 +232,7 @@
     </scenes>
     <resources>
         <image name="1470557602_android-brain" width="22" height="24"/>
-        <image name="1470557618_icon-map" width="24" height="24"/>
+        <image name="1470614352_icon-map" width="32" height="32"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="EYS-4U-lZY"/>
