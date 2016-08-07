@@ -16,6 +16,7 @@
 		022A54161D55730200581948 /* bluetoothUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022A54151D55730200581948 /* bluetoothUITests.swift */; };
 		024A8FFF1D567B9E00E1FF9F /* Mapbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 024A8FFE1D567B9E00E1FF9F /* Mapbox.framework */; };
 		024A90001D567B9E00E1FF9F /* Mapbox.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 024A8FFE1D567B9E00E1FF9F /* Mapbox.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		024A90031D56DB6F00E1FF9F /* thing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024A90021D56DB6F00E1FF9F /* thing.swift */; };
 		B94F2F770B71572D326CD4BB /* Pods_bluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E62DF4FD4049EBDEED7A702 /* Pods_bluetooth.framework */; };
 /* End PBXBuildFile section */
 
@@ -65,6 +66,7 @@
 		022A54151D55730200581948 /* bluetoothUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bluetoothUITests.swift; sourceTree = "<group>"; };
 		022A54171D55730200581948 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		024A8FFE1D567B9E00E1FF9F /* Mapbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Mapbox.framework; sourceTree = "<group>"; };
+		024A90021D56DB6F00E1FF9F /* thing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = thing.swift; sourceTree = "<group>"; };
 		07E34CEC055A5AB858EDA520 /* Pods-bluetooth.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bluetooth.debug.xcconfig"; path = "Pods/Target Support Files/Pods-bluetooth/Pods-bluetooth.debug.xcconfig"; sourceTree = "<group>"; };
 		2E62DF4FD4049EBDEED7A702 /* Pods_bluetooth.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_bluetooth.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B945AF1F0A59D03304327AC2 /* Pods-bluetooth.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bluetooth.release.xcconfig"; path = "Pods/Target Support Files/Pods-bluetooth/Pods-bluetooth.release.xcconfig"; sourceTree = "<group>"; };
@@ -125,6 +127,7 @@
 			children = (
 				022A53F51D55730200581948 /* AppDelegate.swift */,
 				022A53F71D55730200581948 /* ViewController.swift */,
+				024A90021D56DB6F00E1FF9F /* thing.swift */,
 				022A53F91D55730200581948 /* Main.storyboard */,
 				022A53FC1D55730200581948 /* Assets.xcassets */,
 				022A53FE1D55730200581948 /* LaunchScreen.storyboard */,
@@ -356,6 +359,7 @@
 			files = (
 				022A53F81D55730200581948 /* ViewController.swift in Sources */,
 				022A53F61D55730200581948 /* AppDelegate.swift in Sources */,
+				024A90031D56DB6F00E1FF9F /* thing.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

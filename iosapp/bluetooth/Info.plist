@@ -2,8 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Hi</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Hi</string>
 	<key>MGLMapboxAccessToken</key>
-	<string>pk.eyJ1IjoiYnV6emNyYWNrbGUiLCJhIjoiY2lyamdzOWtwMDAxeGZsbThmczh4a2FwZyJ9.zizKQVngycUX54-gg8-4mA</string>
+	<string>pk.eyJ1IjoiYnV6emNyYWNrbGUiLCJhIjoiY2lyamg2ZDRqMDAxcmZrbTZ6ejJ3Ynl4NCJ9.V1sGsdYzANq9ysobTxVC1A</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
