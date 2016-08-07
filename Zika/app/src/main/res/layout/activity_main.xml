@@ -23,4 +23,14 @@
         android:onClick="onFabPress"
         android:src="@drawable/cast_ic_notification_play" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/low_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:clickable="true"
+        android:layout_alignParentRight="true"
+        android:layout_above="@id/fab"
+        android:onClick="onLowDataPress"
+        android:src="@drawable/ic_cast_dark" />
 </RelativeLayout>

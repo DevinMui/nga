@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.mapbox.mapboxsdk.MapboxAccountManager;
 import com.mapbox.mapboxsdk.annotations.MarkerViewOptions;
@@ -47,6 +48,10 @@ public class MainActivity extends AppCompatActivity implements com.mapbox.mapbox
 
     int dataPoints = 0;
 
+    JSONObject p2pdata;
+
+    Boolean low_data = false;
+
     Api mApi = new Api();
 
     Boolean data = false;
@@ -60,7 +65,6 @@ public class MainActivity extends AppCompatActivity implements com.mapbox.mapbox
         final Context context = this;
         super.onCreate(savedInstanceState);
 
-
         final ch.uepaa.p2pkit.StatusResult result = P2PKitClient.isP2PServicesAvailable(this);
         if (result.getStatusCode() == StatusResult.SUCCESS) {
             P2PKitClient client = P2PKitClient.getInstance(this);
@@ -71,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements com.mapbox.mapbox
 
         P2PKitClient.getInstance(context).getDiscoveryServices().addP2pListener(mP2pDiscoveryListener);
         try {
-            P2PKitClient.getInstance(this).getDiscoveryServices().setP2pDiscoveryInfo("devinmui@yahoo.com".getBytes());
+            P2PKitClient.getInstance(this).getDiscoveryServices().setP2pDiscoveryInfo(p2pdata.toString().getBytes()); // all the data you have
         } catch (InfoTooLongException e) {
             Log.e("P2PListener", "The discovery info is too long");
         }
@@ -119,9 +123,18 @@ public class MainActivity extends AppCompatActivity implements com.mapbox.mapbox
                             dataPoints = jsonArr.length();
                             for(int i=0;i<jsonArr.length();i++){
                                 JSONObject json = jsonArr.getJSONObject(i);
+                                final String email = json.getString("email");
                                 final String disease = json.getString("disease");
                                 final double latitude = json.getDouble("lat");
                                 final double longitude = json.getDouble("long");
+                                JSONArray p2pArr = p2pdata.getJSONArray("previously_connected");
+                                p2pArr.put(p2pArr.length(), json);
+                                p2pdata.put("previously_connected", p2pArr);
+                                try {
+                                    P2PKitClient.getInstance(context).getDiscoveryServices().setP2pDiscoveryInfo(p2pdata.toString().getBytes()); // all the data you have
+                                } catch (InfoTooLongException e) {
+                                    Log.e("P2PListener", "The discovery info is too long");
+                                }
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
@@ -153,6 +166,20 @@ public class MainActivity extends AppCompatActivity implements com.mapbox.mapbox
         @Override
         public void onPeerDiscovered(final Peer peer) {
             Log.d("P2PListener", "Peer discovered: " + peer.getNodeId() + " with info: " + new String(peer.getDiscoveryInfo()));
+            String str = new String(peer.getDiscoveryInfo());
+            try {
+                JSONObject json = new JSONObject(str);
+                // { "previously_connected": [ {} ], "user": { "email": ... }, "low_data": true/false }
+
+                JSONArray jsonArr = p2pdata.getJSONArray("previously_connected");
+                jsonArr.put(jsonArr.length(), json.getJSONObject("user"));
+                JSONArray prevArr = json.getJSONArray("previously_connected");
+                JSONArray combined = concatArray(prevArr, jsonArr);
+                p2pdata.put("previously_connected", combined);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         }
 
         @Override
@@ -163,6 +190,19 @@ public class MainActivity extends AppCompatActivity implements com.mapbox.mapbox
         @Override
         public void onPeerUpdatedDiscoveryInfo(Peer peer) {
             Log.d("P2PListener", "Peer updated: " + peer.getNodeId() + " with new info: " + new String(peer.getDiscoveryInfo()));
+            String str = new String(peer.getDiscoveryInfo());
+            try {
+                JSONObject json = new JSONObject(str);
+                // { "previously_connected": [ {} ], "user": { "email": ... }, "low_data": true/false }
+
+                JSONArray jsonArr = p2pdata.getJSONArray("previously_connected");
+                jsonArr.put(jsonArr.length(), json.getJSONObject("user"));
+                JSONArray prevArr = json.getJSONArray("previously_connected");
+                JSONArray combined = concatArray(prevArr, jsonArr);
+                p2pdata.put("previously_connected", combined);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
@@ -170,6 +210,18 @@ public class MainActivity extends AppCompatActivity implements com.mapbox.mapbox
             Log.d("P2pListener", "Peer " + peer.getNodeId() + " changed proximity strength: " + peer.getProximityStrength());
         }
     };
+
+    private JSONArray concatArray(JSONArray arr1, JSONArray arr2)
+            throws JSONException {
+        JSONArray result = new JSONArray();
+        for (int i = 0; i < arr1.length(); i++) {
+            result.put(arr1.get(i));
+        }
+        for (int i = 0; i < arr2.length(); i++) {
+            result.put(arr2.get(i));
+        }
+        return result;
+    }
 
     private final P2PKitStatusCallback mStatusCallback = new P2PKitStatusCallback() {
         @Override
@@ -268,6 +320,18 @@ public class MainActivity extends AppCompatActivity implements com.mapbox.mapbox
 
     }
 
+    public void onLowDataPress(View v){
+        if(low_data){
+            Toast.makeText(v.getContext(), "Low data mode is off",
+                    Toast.LENGTH_LONG).show();
+            low_data = false;
+        } else {
+            Toast.makeText(v.getContext(), "Low data mode is on",
+                    Toast.LENGTH_LONG).show();
+            low_data = true;
+        }
+    }
+
     private class GeoTask extends AsyncTask<String, Void, String> {
         private Context mContext;
 
@@ -320,6 +384,14 @@ public class MainActivity extends AppCompatActivity implements com.mapbox.mapbox
                                 dataPoints = jsonArr.length();
                                 for (int i = 0; i < jsonArr.length(); i++) {
                                     final JSONObject json = jsonArr.getJSONObject(i);
+                                    JSONArray p2pArr = p2pdata.getJSONArray("previously_connected");
+                                    p2pArr.put(p2pArr.length(), json);
+                                    p2pdata.put("previously_connected", p2pArr);
+                                    try {
+                                        P2PKitClient.getInstance(mContext).getDiscoveryServices().setP2pDiscoveryInfo(p2pdata.toString().getBytes()); // all the data you have
+                                    } catch (InfoTooLongException e) {
+                                        Log.e("P2PListener", "The discovery info is too long");
+                                    }
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
