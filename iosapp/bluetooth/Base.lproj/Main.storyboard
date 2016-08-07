@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="9SL-PK-RaT">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="ast-JD-o3b">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -17,6 +17,7 @@
                     <connections>
                         <segue destination="GZk-8t-cgN" kind="relationship" relationship="viewControllers" id="KTA-am-NZA"/>
                         <segue destination="Sx7-XD-8D6" kind="relationship" relationship="viewControllers" id="V5e-am-21r"/>
+                        <segue destination="iXT-yR-QH3" kind="relationship" relationship="viewControllers" id="vFY-bE-cQU"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x0U-Fe-o1W" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -45,6 +46,122 @@
             </objects>
             <point key="canvasLocation" x="1108" y="-125"/>
         </scene>
+        <!--Login-->
+        <scene sceneID="JFE-HP-Dmz">
+            <objects>
+                <viewController id="ast-JD-o3b" customClass="login" customModule="bluetooth" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Ovc-dB-owX"/>
+                        <viewControllerLayoutGuide type="bottom" id="fIT-W1-Yzd"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Ikf-u2-Q4H">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Login" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="y7N-7g-mkA">
+                                <rect key="frame" x="279" y="103" width="42" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="email" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="dpb-Ky-QNd">
+                                <rect key="frame" x="185" y="150" width="231" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" keyboardType="emailAddress"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lyQ-bf-PAB">
+                                <rect key="frame" x="225" y="271" width="139" height="30"/>
+                                <state key="normal" title="Register Here"/>
+                                <connections>
+                                    <segue destination="2lP-HH-Sau" kind="presentation" id="900-T3-biw"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7Gf-Ad-Wl9">
+                                <rect key="frame" x="271" y="202" width="46" height="30"/>
+                                <state key="normal" title="Login"/>
+                                <connections>
+                                    <action selector="login:" destination="ast-JD-o3b" eventType="touchUpInside" id="Dsy-BO-NvP"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="7Gf-Ad-Wl9" firstAttribute="centerX" secondItem="Ikf-u2-Q4H" secondAttribute="centerX" id="Fna-h1-Lgb"/>
+                            <constraint firstItem="y7N-7g-mkA" firstAttribute="centerX" secondItem="Ikf-u2-Q4H" secondAttribute="centerX" id="Mk2-sk-nzn"/>
+                            <constraint firstItem="lyQ-bf-PAB" firstAttribute="centerX" secondItem="Ikf-u2-Q4H" secondAttribute="centerX" id="ndj-sI-k2x"/>
+                            <constraint firstItem="dpb-Ky-QNd" firstAttribute="centerX" secondItem="Ikf-u2-Q4H" secondAttribute="centerX" id="xWf-Th-DHI"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="email" destination="dpb-Ky-QNd" id="wgO-Vw-Hyq"/>
+                        <segue destination="9SL-PK-RaT" kind="show" identifier="login" id="tZy-OX-se2"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="a68-zC-6WV" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-501" y="-586"/>
+        </scene>
+        <!--Register-->
+        <scene sceneID="6pi-ge-x3q">
+            <objects>
+                <viewController id="2lP-HH-Sau" customClass="register" customModule="bluetooth" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Kmn-z4-Ya3"/>
+                        <viewControllerLayoutGuide type="bottom" id="T2k-pN-ONH"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="boD-jF-3zh">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Register" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NYS-QE-H7x">
+                                <rect key="frame" x="222" y="100" width="157" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="email" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="RLI-Ni-rhq">
+                                <rect key="frame" x="185" y="158" width="231" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" keyboardType="emailAddress"/>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="confirm email" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="lU1-04-jyD">
+                                <rect key="frame" x="185" y="196" width="231" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" keyboardType="emailAddress"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ci0-gI-JOh">
+                                <rect key="frame" x="263" y="243" width="74" height="30"/>
+                                <state key="normal" title="Register"/>
+                                <connections>
+                                    <action selector="register:" destination="2lP-HH-Sau" eventType="touchUpInside" id="ZUm-mr-IX8"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LaY-BW-5Wg">
+                                <rect key="frame" x="235" y="308" width="130" height="30"/>
+                                <state key="normal" title="Back to Login"/>
+                                <connections>
+                                    <action selector="back:" destination="2lP-HH-Sau" eventType="touchUpInside" id="cOR-LP-vyt"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="ci0-gI-JOh" firstAttribute="centerX" secondItem="boD-jF-3zh" secondAttribute="centerX" id="BBI-G6-Eb5"/>
+                            <constraint firstItem="LaY-BW-5Wg" firstAttribute="centerX" secondItem="boD-jF-3zh" secondAttribute="centerX" id="Fls-IP-z6M"/>
+                            <constraint firstItem="NYS-QE-H7x" firstAttribute="centerX" secondItem="boD-jF-3zh" secondAttribute="centerX" id="G8G-3p-Zfx"/>
+                            <constraint firstItem="lU1-04-jyD" firstAttribute="centerX" secondItem="boD-jF-3zh" secondAttribute="centerX" id="dbn-87-Pzc"/>
+                            <constraint firstItem="RLI-Ni-rhq" firstAttribute="centerX" secondItem="boD-jF-3zh" secondAttribute="centerX" id="z0b-dD-7aX"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="cemail" destination="lU1-04-jyD" id="Giy-7t-FWI"/>
+                        <outlet property="email" destination="RLI-Ni-rhq" id="oug-td-jJt"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Rm9-OV-guL" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1115" y="-898"/>
+        </scene>
         <!--Delegate-->
         <scene sceneID="m2t-4u-p9l">
             <objects>
@@ -67,9 +184,57 @@
             </objects>
             <point key="canvasLocation" x="1149" y="662"/>
         </scene>
+        <!--Settings-->
+        <scene sceneID="CBG-8G-dus">
+            <objects>
+                <viewController id="iXT-yR-QH3" customClass="settings" customModule="bluetooth" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Ocg-qh-HoW"/>
+                        <viewControllerLayoutGuide type="bottom" id="ctd-tj-dnP"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="c6H-V6-llf">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KhM-fe-p8D">
+                                <rect key="frame" x="260" y="285" width="81" height="30"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                <state key="normal" title="Sign Out"/>
+                                <connections>
+                                    <action selector="signOut:" destination="iXT-yR-QH3" eventType="touchUpInside" id="xu7-fB-NUI"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zgq-oX-ebt">
+                                <rect key="frame" x="121" y="58" width="358" height="146"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="KhM-fe-p8D" firstAttribute="centerX" secondItem="c6H-V6-llf" secondAttribute="centerX" id="8UJ-w7-Y1k"/>
+                            <constraint firstItem="Zgq-oX-ebt" firstAttribute="centerX" secondItem="c6H-V6-llf" secondAttribute="centerX" id="iQm-LW-Vfv"/>
+                            <constraint firstItem="KhM-fe-p8D" firstAttribute="centerY" secondItem="c6H-V6-llf" secondAttribute="centerY" id="oHc-Ml-93X"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Settings" id="wn0-jS-fed"/>
+                    <connections>
+                        <outlet property="label" destination="Zgq-oX-ebt" id="eys-KD-Xiw"/>
+                        <segue destination="ast-JD-o3b" kind="show" id="Okv-NZ-ZWN"/>
+                        <segue destination="ast-JD-o3b" kind="show" identifier="logout" id="EYS-4U-lZY"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="KVp-mZ-fr3" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1149" y="1357"/>
+        </scene>
     </scenes>
     <resources>
         <image name="1470557602_android-brain" width="22" height="24"/>
         <image name="1470557618_icon-map" width="24" height="24"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="EYS-4U-lZY"/>
+    </inferredMetricsTieBreakers>
 </document>

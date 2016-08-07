@@ -9,7 +9,6 @@ import Alamofire
 
 class ViewController: UIViewController, MGLMapViewDelegate {
 
-
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -22,57 +21,84 @@ class ViewController: UIViewController, MGLMapViewDelegate {
         mapView.delegate = self
         view.addSubview(mapView)
         
-        // Specify coordinates for our annotations.
-        let coordinates = [
-            CLLocationCoordinate2DMake(45.52245, -122.67773),
-            CLLocationCoordinate2DMake(37.4, -122.014),
-            CLLocationCoordinate2DMake(37.36, -122.02)
-            ]
-        
-        // Fill an array with point annotations and add it to the map.
         var pointAnnotations = [MGLPointAnnotation]()
-        for coordinate in coordinates {
-            let point = MGLPointAnnotation()
-            point.coordinate = coordinate
-            point.title = "\(coordinate.latitude), \(coordinate.longitude)"
-            pointAnnotations.append(point)
+        var lats = [Double()]
+        var longs = [Double()]
+        var diseases = [String()]
+        
+        Alamofire.request(.GET, "https://dce96ee1.ngrok.io/data").responseJSON {response in
+            
+            if let JSON = response.result.value {
+                
+                for i in 0..<JSON.count {
+                    
+                    let long = JSON[i]["long"] as! Double
+                    let lat = JSON[i]["lat"] as! Double
+                    let dis = JSON[i]["disease"] as! String
+                    lats.append(lat)
+                    longs.append(long)
+                    diseases.append(dis)
+                    
+                }
+                
+                for x in 0..<longs.count {
+                    let point = MGLPointAnnotation()
+                    point.coordinate = CLLocationCoordinate2DMake(lats[x], longs[x])
+                    print(longs[x])
+                    point.title = "\(diseases[x]) has been reported here"
+
+                    pointAnnotations.append(point)
+                    mapView.addAnnotation(point)
+                }
+                
+            }
         }
         
-        _ = NSTimer.scheduledTimerWithTimeInterval(5, target: self, selector: Selector("update"), userInfo: nil, repeats: true)
-        
-        mapView.addAnnotations(pointAnnotations)
     }
-
-    func update () {
     
-        dispatch_async(dispatch_get_main_queue(), {
+        // Fill an array with point annotations and add it to the map.
+
+    /*func update () {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            dispatch_async(dispatch_get_main_queue()) {
+                let mapView = MGLMapView(frame: self.view.bounds)
             
-            var pointAnnotations = [MGLPointAnnotation]()
-            
-            
-            Alamofire.request(.GET, "https://dce96ee1.ngrok.io/data").responseJSON {response in
+                var pointAnnotations = [MGLPointAnnotation]()
+                var lats = [Double()]
+                var longs = [Double()]
+                var diseases = [String()]
                 
-                if let JSON = response.result.value {
-                    print(JSON)
+                Alamofire.request(.GET, "https://dce96ee1.ngrok.io/data").responseJSON {response in
                     
-                    for i in 0..<JSON.count {
+                    if let JSON = response.result.value {
+                        
+                        for i in 0..<JSON.count {
+                            
+                            let long = JSON[i]["long"] as! Double
+                            let lat = JSON[i]["lat"] as! Double
+                            let dis = JSON[i]["disease"] as! String
+                            lats.append(lat)
+                            longs.append(long)
+                            diseases.append(dis)
+                            
+                        }
+                        
+                        for x in 0..<longs.count {
+                            let point = MGLPointAnnotation()
+                            point.coordinate = CLLocationCoordinate2DMake(lats[x], longs[x])
+                            print(longs[x])
+                            point.title = "\(diseases[x])"
+                            pointAnnotations.append(point)
+                            mapView.addAnnotation(point)
+                        }
                         
                     }
                 }
             }
-            
-            
-            for coordinate in coordinates {
-                let point = MGLPointAnnotation()
-                point.coordinate = coordinate
-                point.title = "\(coordinate.latitude), \(coordinate.longitude)"
-                pointAnnotations.append(point)
-            }
-
-            
-            mapView.addAnnotations(pointAnnotations)
-        })
+        }
     }
+    
+    }*/
 
     // MARK: - MGLMapViewDelegate methods
     
@@ -120,4 +146,3 @@ class CustomAnnotationView: MGLAnnotationView {
     }
     
 }
-  
