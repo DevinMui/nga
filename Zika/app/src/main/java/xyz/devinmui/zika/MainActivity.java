@@ -1,6 +1,7 @@
 package xyz.devinmui.zika;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -39,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements com.mapbox.mapbox
 
     int dataPoints = 0;
 
+    String email;
+
     Api mApi = new Api();
 
     Boolean data = false;
@@ -51,6 +54,10 @@ public class MainActivity extends AppCompatActivity implements com.mapbox.mapbox
     protected void onCreate(Bundle savedInstanceState) {
         final Context context = this;
         super.onCreate(savedInstanceState);
+
+        Intent intent = getIntent();
+
+        email = intent.getStringExtra("email");
 
         MapboxAccountManager.start(this, "pk.eyJ1IjoiZGV2aW5tdWkiLCJhIjoiY2lyam0zOWMwMDAybGY5bTY0am5qbHdmOSJ9.ZEMl1ywHqfRO5MyMv3CHQA");
         setContentView(R.layout.activity_main);
@@ -117,7 +124,10 @@ public class MainActivity extends AppCompatActivity implements com.mapbox.mapbox
                 });
 
                 UpdateTask task = new UpdateTask(context);
+                GeoTask geoTask = new GeoTask(context);
+
                 task.execute();
+                geoTask.execute();
             }
         });
     }
@@ -160,7 +170,6 @@ public class MainActivity extends AppCompatActivity implements com.mapbox.mapbox
     public void onLocationChanged(Location location) {
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
-        String email = "";
         String json = "{\"email\": \"" + email + "\", \"lat\": " + latitude + ", \"long\": " + longitude + "}";
         try {
             mApi.post("/geodata", json, new Callback() {
@@ -202,8 +211,6 @@ public class MainActivity extends AppCompatActivity implements com.mapbox.mapbox
         @Override
         protected String doInBackground(String... params) {
             while(true) {
-                // do stuff
-                String email = "devinmui@yahoo.com";
                 LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                 if (ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling

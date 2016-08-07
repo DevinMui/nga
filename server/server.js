@@ -38,7 +38,7 @@ var geoDataSchema = new mongoose.Schema({
 
 var userSchema = new mongoose.Schema({
 	name: String, // really doesnt matter but wutever
-	email: String,
+	email: { type: String, unique: true},
 	disease: String,
 	severity: Number, // severity from 0 - 3 where 0 is least severe and 3 is most severe
 	doctor: Boolean, 
@@ -61,73 +61,73 @@ app.get('/memes', function(req, res){
 	res.redirect("https://www.youtube.com/watch?v=HgQEuPw942c")
 })
 
-app.post('/update_person', function(req, res){
-	// send array with people close, including throughout sick time (typically 1 -3 days but depends on illness)
-	User.findOne({ email: req.body.user.email }, function(err, doc){
-		if(err){
-			res.json({"error": "user could not be found"})
-		} else if(doc == undefined){
-			res.json({"error": "user could not be found"})
-		} else if(!doc.doctor){
-			res.json({"error": "user is not a doctor"})
-		} else {
-			User.findOne({ email: req.body.email }, function (err, doc){
-				doc.disease = req.body.disease
-				doc.severity = 4 // infected
-				doc.save(function(err, doc){
-					var data = Data({
-						lat: req.body.lat,
-						long: req.body.long,
-						user_email: req.body.email,
-						disease: req.body.disease,
-						severity: 4
-					}).save(function(err, doc){
-						if(err)
-							res.json({"error": "data could not be created"})
-						else {
-							for(var i=0;i<req.body.people.length;i++){
-								var person = req.body.people[i]
-								User.findOne({ "email": person.email }, function(err, doc){
-									if(err){
-										res.json({"error": "user could not be found"})
-										//break
-									} else {
-										doc.disease = req.body.disease,
-										doc.severity = 3
-										doc.save(function(err, doc){
-											if(err){
-												res.json({"error": "user could not be updated"})
-												//break
-											} else {
-												console.log(doc)
-												Data({ 
-													lat: person.lat,
-													long: person.long,
-													user_email: person.email,
-													disease: req.body.disease,
-													severity: 3
-												}).save(function(err, doc){
-													if(err){
-														res.json({"error": "data could not be created"})
-														//break
-													} else {
-														console.log(doc)
-													}
-												})
-											}
+// app.post('/update_person', function(req, res){
+// 	// send array with people close, including throughout sick time (typically 1 -3 days but depends on illness)
+// 	User.findOne({ email: req.body.user.email }, function(err, doc){
+// 		if(err){
+// 			res.json({"error": "user could not be found"})
+// 		} else if(doc == undefined){
+// 			res.json({"error": "user could not be found"})
+// 		} else if(!doc.doctor){
+// 			res.json({"error": "user is not a doctor"})
+// 		} else {
+// 			User.findOne({ email: req.body.email }, function (err, doc){
+// 				doc.disease = req.body.disease
+// 				doc.severity = 4 // infected
+// 				doc.save(function(err, doc){
+// 					var data = Data({
+// 						lat: req.body.lat,
+// 						long: req.body.long,
+// 						user_email: req.body.email,
+// 						disease: req.body.disease,
+// 						severity: 4
+// 					}).save(function(err, doc){
+// 						if(err)
+// 							res.json({"error": "data could not be created"})
+// 						else {
+// 							for(var i=0;i<req.body.people.length;i++){
+// 								var person = req.body.people[i]
+// 								User.findOne({ "email": person.email }, function(err, doc){
+// 									if(err){
+// 										res.json({"error": "user could not be found"})
+// 										//break
+// 									} else {
+// 										doc.disease = req.body.disease,
+// 										doc.severity = 3
+// 										doc.save(function(err, doc){
+// 											if(err){
+// 												res.json({"error": "user could not be updated"})
+// 												//break
+// 											} else {
+// 												console.log(doc)
+// 												Data({ 
+// 													lat: person.lat,
+// 													long: person.long,
+// 													user_email: person.email,
+// 													disease: req.body.disease,
+// 													severity: 3
+// 												}).save(function(err, doc){
+// 													if(err){
+// 														res.json({"error": "data could not be created"})
+// 														//break
+// 													} else {
+// 														console.log(doc)
+// 													}
+// 												})
+// 											}
 
-										})
-									}
-								})
-							}
-							res.json({"message": "all good"})
-						}
-					})
-				})
-			})
-		}
-	})
-})
+// 										})
+// 									}
+// 								})
+// 							}
+// 							res.json({"message": "all good"})
+// 						}
+// 					})
+// 				})
+// 			})
+// 		}
+// 	})
+// })
 
 // doctor only function
 app.post('/update', function(req, res){
@@ -204,7 +204,7 @@ app.post('/create_person', function(req, res){
 })
 
 app.get('/data', function(req, res){
-	Data.find({}, function(err, doc){
+	Data.find({ disease: { $ne: null}}, function(err, doc){
 		if(err)
 			res.json({"error": "failed to get data"})
 		else if(doc == undefined)
