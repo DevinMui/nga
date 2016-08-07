@@ -1,11 +1,9 @@
 
 
 
-
-
 import Mapbox
 import UIKit
-
+import Alamofire
 
 class thing: UIViewController, MGLMapViewDelegate {
     
@@ -19,38 +17,89 @@ class thing: UIViewController, MGLMapViewDelegate {
         mapView.centerCoordinate = CLLocationCoordinate2DMake(37.3798862, -122.01248270000002)
         mapView.showsUserLocation = true
         mapView.zoomLevel = 10
-        mapView.maximumZoomLevel = 17
+        mapView.maximumZoomLevel = 15
         mapView.delegate = self
         view.addSubview(mapView)
         
-        // Specify coordinates for our annotations.
-        let coordinates = [
-            CLLocationCoordinate2DMake(45.52245, -122.67773),
-            CLLocationCoordinate2DMake(37.4, -122.014),
-            CLLocationCoordinate2DMake(37.36, -122.02)
-        ]
-        
-        // Fill an array with point annotations and add it to the map.
         var pointAnnotations = [MGLPointAnnotation]()
-        for coordinate in coordinates {
-            let point = MGLPointAnnotation()
-            point.coordinate = coordinate
-            point.title = "\(coordinate.latitude), \(coordinate.longitude)"
-            pointAnnotations.append(point)
+        var lats = [Double()]
+        var longs = [Double()]
+        var diseases = [String()]
+        
+        Alamofire.request(.GET, "https://dce96ee1.ngrok.io/data").responseJSON {response in
+            
+            if let JSON = response.result.value {
+                
+                for i in 0..<JSON.count {
+                    
+                    let long = JSON[i]["long"] as! Double
+                    let lat = JSON[i]["lat"] as! Double
+                    let dis = JSON[i]["disease"] as! String
+                    lats.append(lat)
+                    longs.append(long)
+                    diseases.append(dis)
+                    
+                }
+                
+                for x in 0..<longs.count {
+                    let point = MGLPointAnnotation()
+                    point.coordinate = CLLocationCoordinate2DMake(lats[x], longs[x])
+                    print(longs[x])
+                    point.title = "\(diseases[x]) is predicted here"
+                    pointAnnotations.append(point)
+                    mapView.addAnnotation(point)
+                }
+                
+            }
         }
-        
-        mapView.addAnnotations(pointAnnotations)
-        
-        //_ = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: Selector("update"), userInfo: nil, repeats: true)
         
     }
     
-    func update () {
-        
-        dispatch_async(dispatch_get_main_queue(), {
-
-        })
-    }
+    
+    
+    // Fill an array with point annotations and add it to the map.
+    
+    /*func update () {
+     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+     dispatch_async(dispatch_get_main_queue()) {
+     let mapView = MGLMapView(frame: self.view.bounds)
+     
+     var pointAnnotations = [MGLPointAnnotation]()
+     var lats = [Double()]
+     var longs = [Double()]
+     var diseases = [String()]
+     
+     Alamofire.request(.GET, "https://dce96ee1.ngrok.io/data").responseJSON {response in
+     
+     if let JSON = response.result.value {
+     
+     for i in 0..<JSON.count {
+     
+     let long = JSON[i]["long"] as! Double
+     let lat = JSON[i]["lat"] as! Double
+     let dis = JSON[i]["disease"] as! String
+     lats.append(lat)
+     longs.append(long)
+     diseases.append(dis)
+     
+     }
+     
+     for x in 0..<longs.count {
+     let point = MGLPointAnnotation()
+     point.coordinate = CLLocationCoordinate2DMake(lats[x], longs[x])
+     print(longs[x])
+     point.title = "\(diseases[x])"
+     pointAnnotations.append(point)
+     mapView.addAnnotation(point)
+     }
+     
+     }
+     }
+     }
+     }
+     }
+     
+     }*/
     
     // MARK: - MGLMapViewDelegate methods
     
@@ -70,9 +119,10 @@ class thing: UIViewController, MGLMapViewDelegate {
         // If there’s no reusable annotation view available, initialize a new one.
         if annotationView == nil {
             annotationView = CustomAnnotationView(reuseIdentifier: reuseIdentifier)
-            annotationView!.frame = CGRectMake(0, 0, 40, 40)
+            annotationView!.frame = CGRectMake(0, 0, 60, 60)
             
             // Set the annotation view’s background color to a value determined by its longitude.
+            let hue = CGFloat(annotation.coordinate.longitude) / 100
             annotationView!.backgroundColor = UIColor(hue: 0, saturation: 0.5, brightness: 1, alpha: 0.4)
         }
         
@@ -83,6 +133,3 @@ class thing: UIViewController, MGLMapViewDelegate {
         return true
     }
 }
-
-
-  
