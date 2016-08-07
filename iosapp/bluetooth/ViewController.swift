@@ -7,10 +7,29 @@ import Mapbox
 import UIKit
 import Alamofire
 
-class ViewController: UIViewController, MGLMapViewDelegate {
+class ViewController: UIViewController, MGLMapViewDelegate, CLLocationManagerDelegate {
+    
+    let locationManager = CLLocationManager()
+    let email = NSUserDefaults.standardUserDefaults().stringForKey("email")
+    
+    var longitude = Double()
+    var latitude = Double()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.locationManager.requestAlwaysAuthorization()
+        
+        // For use in foreground
+        self.locationManager.requestWhenInUseAuthorization()
+        
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+            locationManager.startUpdatingLocation()
+        }
+        
+        _ = NSTimer.scheduledTimerWithTimeInterval(2.5, target: self, selector: Selector("update"), userInfo: nil, repeats: true)
         
         let mapView = MGLMapView(frame: view.bounds)
         mapView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
@@ -25,6 +44,10 @@ class ViewController: UIViewController, MGLMapViewDelegate {
         var lats = [Double()]
         var longs = [Double()]
         var diseases = [String()]
+        
+        lats.removeAll()
+        longs.removeAll()
+        diseases.removeAll()
         
         Alamofire.request(.GET, "https://dce96ee1.ngrok.io/data").responseJSON {response in
             
@@ -55,50 +78,53 @@ class ViewController: UIViewController, MGLMapViewDelegate {
         }
         
     }
+
+    
+    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        let locValue:CLLocationCoordinate2D = manager.location!.coordinate
+        
+        let lat = locValue.latitude as Double
+        let long = locValue.latitude as Double
+        
+        if longitude - 0.0005 < long && longitude + 0.0005 > long{
+            longitude = long
+            latitude = lat
+        } else if latitude - 0.0005 < lat && latitude + 0.0005 > lat{
+            longitude = long
+            latitude = lat
+        }
+
+        
+        print("locations = \(locValue.latitude) \(locValue.longitude)")
+    }
     
         // Fill an array with point annotations and add it to the map.
 
-    /*func update () {
+    func update () {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             dispatch_async(dispatch_get_main_queue()) {
-                let mapView = MGLMapView(frame: self.view.bounds)
-            
-                var pointAnnotations = [MGLPointAnnotation]()
-                var lats = [Double()]
-                var longs = [Double()]
-                var diseases = [String()]
                 
-                Alamofire.request(.GET, "https://dce96ee1.ngrok.io/data").responseJSON {response in
-                    
-                    if let JSON = response.result.value {
-                        
-                        for i in 0..<JSON.count {
-                            
-                            let long = JSON[i]["long"] as! Double
-                            let lat = JSON[i]["lat"] as! Double
-                            let dis = JSON[i]["disease"] as! String
-                            lats.append(lat)
-                            longs.append(long)
-                            diseases.append(dis)
-                            
+                let headers : [String : String] = [
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                ]
+                
+                let params = [
+                    "lat": self.latitude,
+                    "long": self.longitude,
+                    "email": self.email!,
+                    ]
+                
+                Alamofire.request(.POST, "http://dce96ee1.ngrok.io/geodata", parameters: params as? [String : AnyObject], headers: headers, encoding: .JSON)
+                    .responseJSON { response in
+                        if let JSON = response.result.value {
+                            print(JSON)
                         }
-                        
-                        for x in 0..<longs.count {
-                            let point = MGLPointAnnotation()
-                            point.coordinate = CLLocationCoordinate2DMake(lats[x], longs[x])
-                            print(longs[x])
-                            point.title = "\(diseases[x])"
-                            pointAnnotations.append(point)
-                            mapView.addAnnotation(point)
-                        }
-                        
-                    }
                 }
             }
         }
-    }
     
-    }*/
+    }
 
     // MARK: - MGLMapViewDelegate methods
     
