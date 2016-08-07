@@ -169,6 +169,17 @@ app.post('/create_person', function(req, res){
 	})
 })
 
+app.get('/data', function(req, res){
+	Data.find({}, function(err, doc){
+		if(err)
+			res.json({"error": "failed to get data"})
+		else if(doc == undefined)
+			res.json({"error": "failed to get data"})
+		else
+			res.json(doc)
+	})
+})
+
 app.post('/geodata', function(req, res){
 	var lat = req.body.lat 
 	var long = req.body.long

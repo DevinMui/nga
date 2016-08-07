@@ -12,5 +12,15 @@
         android:layout_height="fill_parent"
         mapbox:style_url="@string/style_mapbox_streets"/>
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:clickable="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:onClick="onFabPress"
+        android:src="@drawable/cast_ic_notification_play" />
 
 </RelativeLayout>
