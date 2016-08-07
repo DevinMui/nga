@@ -48,7 +48,7 @@ class register: UIViewController {
             Alamofire.request(.POST, "http://dce96ee1.ngrok.io/create_person", parameters: params as? [String : AnyObject], headers: headers, encoding: .JSON)
                 .responseJSON { response in
                     if let JSON = response.result.value {
-                        
+                        print(JSON)
                     }
             }
 
