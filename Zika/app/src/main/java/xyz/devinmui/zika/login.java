@@ -25,7 +25,7 @@ public class login extends AppCompatActivity {
     public void onLoginPress(View v) throws IOException {
         final EditText loginText = (EditText) findViewById(R.id.login_email);
         String str = "{\"email\": \"" + loginText.getText() + "\"}";
-        mApi.post("/create_user", str, new Callback() {
+        mApi.post("/create_person", str, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
 

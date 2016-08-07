@@ -7,6 +7,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.annotation.UiThread;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import com.mapbox.mapboxsdk.annotations.MarkerViewOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.location.LocationListener;
 import com.mapbox.mapboxsdk.location.LocationServices;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
@@ -59,11 +61,12 @@ public class MainActivity extends AppCompatActivity implements com.mapbox.mapbox
 
         email = intent.getStringExtra("email");
 
+        locationServices = LocationServices.getLocationServices(MainActivity.this);
+
         MapboxAccountManager.start(this, "pk.eyJ1IjoiZGV2aW5tdWkiLCJhIjoiY2lyam0zOWMwMDAybGY5bTY0am5qbHdmOSJ9.ZEMl1ywHqfRO5MyMv3CHQA");
         setContentView(R.layout.activity_main);
         mapView = (MapView) findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
-        locationServices = LocationServices.getLocationServices(MainActivity.this);
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(MapboxMap mapboxMap) {
@@ -124,15 +127,42 @@ public class MainActivity extends AppCompatActivity implements com.mapbox.mapbox
                 });
 
                 UpdateTask task = new UpdateTask(context);
-                GeoTask geoTask = new GeoTask(context);
+                //GeoTask geoTask = new GeoTask(context);
 
                 task.execute();
-                geoTask.execute();
+                //geoTask.execute();
             }
         });
     }
 
     private void enableLocation(boolean enabled) {
+        locationServices.addLocationListener(new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                if (location != null) {
+                    // Move the map camera to where the user location is
+                    double latitude = location.getLatitude();
+                    double longitude = location.getLongitude();
+                    String json = "{\"email\": \"" + email + "\", \"lat\": " + latitude + ", \"long\": " + longitude + "}";
+                    try {
+                        mApi.post("/data", json, new Callback() {
+                            @Override
+                            public void onFailure(Call call, IOException e) {
+
+                            }
+
+                            @Override
+                            public void onResponse(Call call, Response response) throws IOException {
+                                // kk thats all folks
+                                System.out.println("sent data");
+                            }
+                        });
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
         map.setMyLocationEnabled(enabled);
     }
 
@@ -166,27 +196,65 @@ public class MainActivity extends AppCompatActivity implements com.mapbox.mapbox
         mapView.onSaveInstanceState(outState);
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-        double latitude = location.getLatitude();
-        double longitude = location.getLongitude();
-        String json = "{\"email\": \"" + email + "\", \"lat\": " + latitude + ", \"long\": " + longitude + "}";
-        try {
-            mApi.post("/geodata", json, new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    // kk thats all folks
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    @Override
+//    public void onLocationChanged(Location location) {
+//        System.out.println("Location Changed");
+//        double latitude = location.getLatitude();
+//        double longitude = location.getLongitude();
+//        String json = "{\"email\": \"" + email + "\", \"lat\": " + latitude + ", \"long\": " + longitude + "}";
+//        try {
+//            mApi.get("/data", new Callback() {
+//                @Override
+//                public void onFailure(Call call, IOException e) {
+//
+//                }
+//
+//                @Override
+//                public void onResponse(Call call, Response response) throws IOException {
+//                    String res = response.body().string();
+//                    try {
+//                        JSONArray jsonArr = new JSONArray(res);
+//                        if (jsonArr.length() > dataPoints) {
+//                            // reparse!
+//                            dataPoints = jsonArr.length();
+//                            for (int i = 0; i < jsonArr.length(); i++) {
+//                                final JSONObject json = jsonArr.getJSONObject(i);
+//                                runOnUiThread(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//                                        try {
+//                                            map.addMarker(new MarkerViewOptions()
+//                                                    .position(new LatLng(json.getDouble("lat"), json.getDouble("long")))
+//                                                    .title(json.getString("disease"))
+//                                                    .snippet(json.getString("disease") + " has cases here")
+//                                            );
+//                                        } catch (JSONException e) {
+//                                            e.printStackTrace();
+//                                        }
+//                                    }
+//                                });
+//                            }
+//                        }
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            });
+//            mApi.post("/data", json, new Callback() {
+//                @Override
+//                public void onFailure(Call call, IOException e) {
+//
+//                }
+//
+//                @Override
+//                public void onResponse(Call call, Response response) throws IOException {
+//                    // kk thats all folks
+//                }
+//            });
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     public void onFabPress(View v) {
         // add data
@@ -201,6 +269,11 @@ public class MainActivity extends AppCompatActivity implements com.mapbox.mapbox
 
     }
 
+    @Override
+    public void onLocationChanged(Location location) {
+        System.out.println("Change");
+    }
+
     private class GeoTask extends AsyncTask<String, Void, String> {
         private Context mContext;
 
@@ -211,6 +284,7 @@ public class MainActivity extends AppCompatActivity implements com.mapbox.mapbox
         @Override
         protected String doInBackground(String... params) {
             while(true) {
+                System.out.println("posting geo data");
                 LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                 if (ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling

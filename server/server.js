@@ -57,6 +57,10 @@ app.get('/', function(req, res){
 	res.render('index')
 })
 
+app.get('/doctor', function(req, res){
+	res.render('doctor')
+})
+
 app.get('/memes', function(req, res){
 	res.redirect("https://www.youtube.com/watch?v=HgQEuPw942c")
 })
@@ -205,6 +209,18 @@ app.post('/create_person', function(req, res){
 
 app.get('/data', function(req, res){
 	Data.find({ disease: { $ne: null}}, function(err, doc){
+		if(err)
+			res.json({"error": "failed to get data"})
+		else if(doc == undefined)
+			res.json({"error": "failed to get data"})
+		else
+			res.json(doc)
+	})
+})
+
+
+app.get('/alldata', function(req, res){
+	Data.find({}, function(err, doc){
 		if(err)
 			res.json({"error": "failed to get data"})
 		else if(doc == undefined)
